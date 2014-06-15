@@ -3,21 +3,25 @@
 
 ## Loading and preprocessing the data
 ```{r ReadData}
-unzip("activity.zip")
-activity <- read.csv("activity.csv")
-activity$date <- as.Date(activity$date)
+  library(plyr)
+  library(lattice)
+  unzip("activity.zip")
+  activity <- read.csv("activity.csv")
+  activity$date <- as.Date(activity$date)
 ```
 
 
 ## What is mean total number of steps taken per day?
 ```{r MeanSteps}
-library(plyr)
-
-library(lattice)
+  steps.mean.day <- ddply(activity, .(date), summarize, mean = mean(steps))
+  histogram(~mean, steps.mean.day)
 ```
 
 
 ## What is the average daily activity pattern?
+```{r DailyActivity}
+  steps.mean.interval <- ddply(activity, .(interval), summarize, mean = mean(steps))
+```
 
 
 
