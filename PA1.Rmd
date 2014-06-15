@@ -32,7 +32,7 @@
 ```{r ImputeMissing}
   missing <- activity[is.na(activity$steps),]
   missing.count <- nrow(missing)
-  
+  missing.count
 ```
 
 
