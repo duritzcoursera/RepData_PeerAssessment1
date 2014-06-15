@@ -5,11 +5,16 @@
 ```{r ReadData}
 unzip("activity.zip")
 activity <- read.csv("activity.csv")
+activity$date <- as.Date(activity$date)
 ```
 
 
 ## What is mean total number of steps taken per day?
+```{r MeanSteps}
+library(plyr)
 
+library(lattice)
+```
 
 
 ## What is the average daily activity pattern?
