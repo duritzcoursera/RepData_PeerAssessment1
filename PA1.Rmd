@@ -12,28 +12,52 @@
 
 
 ## What is mean total number of steps taken per day?
-```{r MeanSteps}
-  steps.mean.day <- ddply(activity, .(date), summarize, mean = mean(steps))
-  histogram(~mean, steps.mean.day)
+```{r DailyActivity}
+  activity.clean <- activity[!is.na(activity$steps),]
+  steps.day <- ddply(activity.clean, .(date), summarize, total = sum(steps))
+  histogram(~total, steps.day)
+  mean(steps.day$total)
+  median(steps.day$total)
 ```
 
 
 ## What is the average daily activity pattern?
-```{r DailyActivity}
-  activity.clean <- activity[!is.na(activity$steps),]
-  steps.mean.interval <- ddply(activity.clean, .(interval), summarize, mean = mean(steps))
-  xyplot(mean~interval, data=steps.mean.interval, type="l")
-  steps.mean.interval.max <- steps.mean.interval$interval[which.max(steps.mean.interval$mean)]
-  steps.mean.interval.max
+```{r IntervalActivity}
+  steps.interval <- ddply(activity.clean, .(interval), summarize, mean = mean(steps))
+  xyplot(mean~interval, data=steps.interval, type="l")
+```
+```{r MaxActivityInterval}
+  steps.interval.max <- steps.interval$interval[which.max(steps.interval$mean)]
+  steps.interval.max
 ```
 
 
 ## Imputing missing values
-```{r ImputeMissing}
+```{r MissingCount}
   missing <- activity[is.na(activity$steps),]
+  missing.index <- is.na(activity$steps)
   missing.count <- nrow(missing)
   missing.count
 ```
-
+``` {r ImputeMissingValues}
+  activity.imp <- activity
+  activity.imp$steps[missing.index] <- unlist(sapply(activity$interval[missing.index], function(x) {steps.interval$mean[steps.interval$interval == x]}))
+  steps.day.imp <- ddply(activity.imp, .(date), summarize, total = sum(steps))
+  histogram(~total, steps.day.imp)
+  mean(steps.day.imp$total)
+  median(steps.day.imp$total)
+```
+The median differs slightly from before because we added more entries using the mean steps in an interval.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+```{r Weekday}
+  activity.wd <- activity.imp
+  weekends <- function(d)
+    {
+      weekend <- c("Saturday","Sunday")
+      if (weekdays(d) %in% weekend)
+        "weekend"
+      else
+        "weekday"
+    }
+```
