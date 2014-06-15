@@ -20,13 +20,20 @@
 
 ## What is the average daily activity pattern?
 ```{r DailyActivity}
-  steps.mean.interval <- ddply(activity, .(interval), summarize, mean = mean(steps))
+  activity.clean <- activity[!is.na(activity$steps),]
+  steps.mean.interval <- ddply(activity.clean, .(interval), summarize, mean = mean(steps))
+  xyplot(mean~interval, data=steps.mean.interval, type="l")
+  steps.mean.interval.max <- steps.mean.interval$interval[which.max(steps.mean.interval$mean)]
+  steps.mean.interval.max
 ```
 
 
-
 ## Imputing missing values
-
+```{r ImputeMissing}
+  missing <- activity[is.na(activity$steps),]
+  missing.count <- nrow(missing)
+  
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
