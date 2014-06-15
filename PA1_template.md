@@ -47,31 +47,34 @@
 ```
 
 ![plot of chunk IntervalActivity](figure/IntervalActivity.png) 
+  
+The interval with the maximum mean steps was:
 
 ```r
-  steps.interval.max <- steps.interval$interval[which.max(steps.interval$mean)]
-  steps.interval.max
+  steps.interval$interval[which.max(steps.interval$mean)]
 ```
 
 ```
 ## [1] 835
 ```
+with its mean steps:
+
+```r
+  steps.interval$mean[which.max(steps.interval$mean)]
+```
+
+```
+## [1] 206.2
+```
 
 
 ## Imputing missing values
+Missing values were imputing by using each interval's overall mean steps in each interval missing a step value.
 
 ```r
   missing <- activity[is.na(activity$steps),]
   missing.index <- is.na(activity$steps)
   missing.count <- nrow(missing)
-  missing.count
-```
-
-```
-## [1] 2304
-```
-
-```r
   activity.imp <- activity
   activity.imp$steps[missing.index] <- unlist(sapply(activity$interval[missing.index], function(x) {steps.interval$mean[steps.interval$interval == x]}))
   steps.day.imp <- ddply(activity.imp, .(date), summarize, total = sum(steps))
@@ -95,7 +98,7 @@
 ```
 ## [1] 10766
 ```
-The median differs slightly from before because we added more entries using the mean steps in an interval.
+The median differs slightly from before because we added more entries using the mean steps in each interval, driving the median towards the mean.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
