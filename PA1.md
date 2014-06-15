@@ -98,3 +98,21 @@
 The median differs slightly from before because we added more entries using the mean steps in an interval.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```r
+  activity.wd <- activity.imp
+  weekends <- function(d)
+    {
+      weekend <- c("Saturday","Sunday")
+      if (weekdays(d) %in% weekend)
+        "weekend"
+      else
+        "weekday"
+    }
+  activity.wd <- cbind(activity.wd, sapply(activity.wd$date, weekends))
+  colnames(activity.wd)[length(activity.wd)] <- "weekday"
+  steps.interval.wd <- ddply(activity.wd, .(interval, weekday), summarize, mean = mean(steps))
+  xyplot(mean~interval | weekday, data=steps.interval.wd, type="l", panel=panel.xyplot, layout=c(1,2))
+```
+
+![plot of chunk Weekday](figure/Weekday.png) 
